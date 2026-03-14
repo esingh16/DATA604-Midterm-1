@@ -1,53 +1,66 @@
-<div align="center">
-
-# 🌟 Project Title: Fashion-MNIST k-NN Analysis 🌟
-
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg?style=for-the-badge&logo=python)](https://www.python.org/)
-[![Framework](https://img.shields.io/badge/Library-Scikit--Learn-orange?style=for-the-badge&logo=scikit-learn)](https://scikit-learn.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
-
-**An in-depth exploration of hyperparameter tuning, indexing bias, and distance metrics using the k-Nearest Neighbors algorithm.**
-
-[Explore Docs](#-key-features) • [View Results](#-experimental-results) • [Report Bug](https://github.com/yourusername/your-repo/issues)
-
-</div>
+# Fashion-MNIST k-NN Optimization Analysis
+> **DATA 604 Midterm Project** > *A systematic study of hyperparameter sensitivity, indexing bias, and distance metrics.*
 
 ---
 
-## 📖 Table of Contents
-* [About The Project](#-about-the-project)
-* [Key Features](#-key-features)
-* [Installation](#-installation)
-* [Experimental Roadmap](#-experimental-roadmap)
-* [Experimental Results](#-experimental-results)
-* [Contributing](#-contributing)
+## 📋 Project Overview
+This repository contains a comprehensive analysis of the **k-Nearest Neighbors (k-NN)** algorithm applied to the full **Fashion-MNIST** dataset (70,000 images). The project explores the boundaries of instance-based learning by evaluating how data volume, neighbor selection, and mathematical distance norms impact classification accuracy.
+
+
 
 ---
 
-## 🧐 About The Project
-This project was developed as a midterm assessment for **DATA 604**. It serves as a comprehensive study of how various factors influence the performance of the **k-Nearest Neighbor (k-NN)** algorithm when applied to the **Fashion-MNIST** dataset.
+## 🔬 Experimental Methodology
 
-> "The goal isn't just to reach high accuracy, but to understand the 'why' behind the failures and successes of the model."
+The study was divided into three primary research questions:
 
-### Built With:
-* 🐍 **Python** (Core Logic)
-* 📊 **Seaborn & Matplotlib** (Visualizations)
-* 🤖 **Scikit-Learn** (ML Implementation)
-* 📦 **NumPy & Pandas** (Data Manipulation)
+### 1. Hyperparameter Tuning ($k$ and $N$)
+We evaluated the trade-off between the number of training samples ($N$) and the number of neighbors ($k$).
+- **Variables:** $N \in \{2000, 4000, 6000\}$ per class; $k \in \{5, 10\}$.
+- **Finding:** Accuracy scales logarithmically with $N$. While $k=10$ provides smoother decision boundaries, $k=5$ often captured local class nuances more effectively.
+
+
+
+### 2. Indexing and Sampling Bias
+We investigated whether the physical storage order of the dataset introduced bias by comparing **Random Indexing** vs. **Sequential Indexing**.
+- **Result:** The performance delta was $<0.2\%$, confirming the Fashion-MNIST dataset is naturally well-shuffled and homogeneous.
+
+### 3. Metric Evaluation ($L_1$ vs. $L_2$)
+We compared the **Euclidean ($L_2$)** norm against the **Manhattan ($L_1$)** norm.
+- **Result:** The Manhattan distance provided a consistent **~1% accuracy boost**.
+- **Insight:** $L_1$ is more robust in high-dimensional (784px) spaces as it avoids the "outlier exaggeration" caused by squaring differences in $L_2$.
+
+
 
 ---
 
-## ✨ Key Features
-- [x] **Hyperparameter Tuning:** Systematic search for optimal $N$ and $k$.
-- [x] **Indexing Analysis:** Comparison between Random and Sequential data sampling.
-- [x] **Metric Evaluation:** Comparative study of **Manhattan (L1)** vs **Euclidean (L2)** distances.
-- [x] **Automated Plotting:** Generation of heatmaps and grouped bar charts for quick analysis.
+## 📈 Summary of Findings (Synthesis)
+
+### Local vs. Global Stability
+While global accuracy reached a peak of **86.13%**, class-specific (local) accuracy remained remarkably polarized:
+* **Highly Stable:** *Trousers* (Class 1) and *Bags* (Class 8) maintained $>95\%$ accuracy across all trials.
+* **Persistent Ambiguity:** *Shirts* (Class 6) remained locked at $\sim 55\%-60\%$ accuracy.
+
+### The "Visual Structure" Constraint
+The performance plateau in the "Shirt" category is not a failure of hyperparameters but a result of the **Visual Structure** of the data. In a 784-dimensional vector space, the silhouettes of Shirts, T-shirts, and Coats overlap significantly. k-NN, being a distance-based classifier, struggles to find a clear manifold when class boundaries are visually blurred.
+
+
 
 ---
 
-## 🚀 Installation
+## 🛠️ Tech Stack
+* **Language:** Python 3.x
+* **Libraries:** `scikit-learn`, `numpy`, `pandas`, `matplotlib`, `seaborn`
+* **Dataset:** Fashion-MNIST (Zalando Research)
 
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/yourusername/your-repo.git](https://github.com/yourusername/your-repo.git)
+---
+
+## 🚀 Key Results Table
+
+| Configuration | Metric | N (Total) | k | Global Accuracy |
+| :--- | :--- | :--- | :--- | :--- |
+| **Baseline** | Euclidean | 20,000 | 5 | 83.85% |
+| **Optimized** | **Manhattan** | **60,000** | **5** | **86.13%** |
+
+---
+*Developed for DATA 604 - Spring 2026*
